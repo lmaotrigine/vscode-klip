@@ -1,0 +1,77 @@
+{
+  "name": "vscode-klip",
+  "displayName": "KLIP",
+  "description": "Klip support for VSCode",
+  "version": "0.0.1",
+  "license": "MPL-2.0",
+  "repository": "https://git.5ht2.me/lmaotrigine/vscode-klip",
+  "engines": {
+    "vscode": "^1.93.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "klip.copy",
+        "title": "KLIP: Copy"
+      },
+      {
+        "command": "klip.paste",
+        "title": "KLIP: Paste"
+      }
+    ],
+    "keybindings": [
+      {
+        "mac": "ctrl+alt+shift+c",
+        "win": "ctrl+alt+shift+c",
+        "linux": "ctrl+alt+shift+c",
+        "key": "ctrl+alt+shift+c",
+        "command": "klip.copy"
+      },
+      {
+        "mac": "ctrl+alt+shift+v",
+        "win": "ctrl+alt+shift+v",
+        "linux": "ctrl+alt+shift+v",
+        "key": "ctrl+alt+shift+v",
+        "command": "klip.paste"
+      }
+    ],
+    "configuration": {
+      "title": "Klip configuration",
+      "properties": {
+        "klip.klipBinPath": {
+          "description": "Path to the klip executable",
+          "type": "string",
+          "default": "klip"
+        },
+        "klip.klipConfigPath": {
+          "description": "Path to the klip.toml file (default=~/.klip.toml)",
+          "type": "string",
+          "default": ""
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run compile",
+    "compile": "tsc -p ./",
+    "package": "vsce package --no-dependencies",
+    "watch": "tsc -watch -p ./",
+    "pretest": "pnpm run compile && pnpm run lint",
+    "lint": "eslint src"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.93.0",
+    "@types/node": "20.x",
+    "@typescript-eslint/eslint-plugin": "^8.3.0",
+    "@typescript-eslint/parser": "^8.3.0",
+    "eslint": "^9.9.1",
+    "typescript": "^5.5.4",
+    "@vscode/vsce": "^3.1.0"
+  },
+  "packageManager": "pnpm@9.5.0+sha1.8c155dc114e1689d18937974f6571e0ceee66f1d"
+}

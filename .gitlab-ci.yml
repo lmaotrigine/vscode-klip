@@ -1,0 +1,45 @@
+stages:
+  - build
+  - upload
+  - release
+
+variables:
+  TAG: $CI_COMMIT_TAG
+  PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/vscode-klip/${TAG}"
+
+build:
+  stage: build
+  image: node:18-slim
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - corepack enable
+    - pnpm install
+    - mkdir ext
+    - pnpm package
+    - find . -name '*.vsix' -exec echo ARTIFACT={} \; > export.env
+    - mv *.vsix ext/
+  artifacts:
+    paths:
+      - ext/
+    reports:
+      dotenv: export.env
+
+upload:
+  stage: upload
+  image: curlimages/curl:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+  - |
+    curl -H "Job-Token: ${CI_JOB_TOKEN}" -T "ext/${ARTIFACT}" "${PACKAGE_REGISTRY_URL}/${ARTIFACT}"
+
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - |
+      release-cli create --name "Release $CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
+        --assets-link "{\"name\":\"${ARTIFACT}\",\"url\":\"${PACKAGE_REGISTRY_URL}/${ARTIFACT}\"}"
