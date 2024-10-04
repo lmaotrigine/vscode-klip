@@ -1,6 +1,6 @@
 {
   "name": "vscode-klip",
-  "displayName": "KLIP",
+  "displayName": "klip",
   "description": "Klip support for VSCode",
   "version": "0.0.1",
   "license": "MPL-2.0",
@@ -17,11 +17,11 @@
     "commands": [
       {
         "command": "klip.copy",
-        "title": "KLIP: Copy"
+        "title": "klip: Copy"
       },
       {
         "command": "klip.paste",
-        "title": "KLIP: Paste"
+        "title": "klip: Paste"
       }
     ],
     "keybindings": [
