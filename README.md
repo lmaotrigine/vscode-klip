@@ -14,8 +14,7 @@ The `klip` executable must be in your `$PATH`.
 This extension contributes the following settings:
 
 - `klip.klipBinPath`: Path to the `klip` executable. Default is `klip`.
-- `klip.klipConfigPath`: Path to the `klip` configuration file. Default is `~/klip.toml` on Windows and
-  `~/.klip.toml` on Unix.
+- `klip.klipConfigPath`: Path to the `klip` configuration file. Default is `~/.klip.toml`.
 
 ## Usage
 
