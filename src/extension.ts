@@ -7,6 +7,35 @@
 import * as cp from 'child_process';
 import * as vscode from 'vscode';
 
+type OnExit = (code: number) => void;
+function spawn(action: 'copy' | 'paste', onExit?: OnExit): cp.ChildProcess {
+  let command = vscode.workspace.getConfiguration('klip')['klipBinPath'];
+  const configPath = vscode.workspace.getConfiguration('klip')['klipConfigPath'];
+  if (!command?.length) {
+    command = 'klip';
+  }
+  const args = configPath ? ['--config', configPath, action] : [action];
+  const options = vscode.workspace.workspaceFolders
+    ? { cwd: vscode.workspace.workspaceFolders[0].uri.fsPath }
+    : {};
+  const child = cp.spawn(command, args, { stdio: ['pipe', 'pipe', 'pipe'], ...options });
+  let stderr = '';
+  child.stderr.on('data', (data: Buffer) => {
+    stderr += data.toString();
+  });
+  child.on('exit', (code) => {
+    if (code !== 0) {
+      const msg = `${command} exited with code ${code}`;
+      const err = stderr || '<no output>';
+      console.error(msg, err);
+      vscode.window.showErrorMessage(`${msg}\n${err}`);
+      return;
+    }
+    onExit?.(code);
+  });
+  return child;
+}
+
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand('klip.copy', () => {
     const editor = vscode.window.activeTextEditor;
@@ -14,24 +43,10 @@ export function activate(context: vscode.ExtensionContext) {
       return;
     }
     const cb = editor.document.getText(editor.selection);
-    let command = vscode.workspace.getConfiguration('klip')['klipBinPath'];
-    const configPath = vscode.workspace.getConfiguration('klip')['klipConfigPath'];
-    const args = [];
-    if (!cb.length) {
+    if (!cb) {
       return;
     }
-    if (!command?.length) {
-      command = 'klip';
-    }
-    if (configPath?.length) {
-      args.push('--config');
-      args.push(configPath);
-    }
-    const options = vscode.workspace.workspaceFolders
-      ? { cwd: vscode.workspace.workspaceFolders[0].uri.path }
-      : {};
-    const child = cp.spawn(command, args, options);
-    child.on('exit', () => {
+    const onExit = () => {
       if (!(vscode.workspace.getConfiguration('klip')['showMessage'] ?? true)) {
         return;
       }
@@ -40,9 +55,10 @@ export function activate(context: vscode.ExtensionContext) {
           vscode.workspace.getConfiguration('klip').update('showMessage', false, vscode.ConfigurationTarget.Global);
         }
       });
-    });
-    child.stdin.write(cb);
-    child.stdin.end();
+    };
+    const child = spawn('copy', onExit);
+    child.stdin?.write(cb);
+    child.stdin?.end();
   });
   context.subscriptions.push(disposable);
   disposable = vscode.commands.registerCommand('klip.paste', () => {
@@ -50,21 +66,8 @@ export function activate(context: vscode.ExtensionContext) {
     if (!editor) {
       return;
     }
-    let command = vscode.workspace.getConfiguration('klip')['klipBinPath'];
-    const configPath = vscode.workspace.getConfiguration('klip')['klipConfigPath'];
-    const args = [];
-    if (!command?.length) {
-      command = 'klip';
-    }
-    if (configPath?.length) {
-      args.push('--config', configPath);
-    }
-    args.push('paste');
-    const options = vscode.workspace.workspaceFolders
-      ? { cwd: vscode.workspace.workspaceFolders[0].uri.fsPath }
-      : {};
-    const child = cp.spawn(command, args, options);
-    child.stdout.on('data', (data: Buffer) => {
+    const child = spawn('paste');
+    child.stdout?.on('data', (data: Buffer) => {
       editor.edit((editBuilder) => {
         editBuilder.delete(editor.selection);
       }).then(() => {
@@ -73,7 +76,7 @@ export function activate(context: vscode.ExtensionContext) {
         });
       });
     });
-    child.stdin.end();
+    child.stdin?.end();
   });
   context.subscriptions.push(disposable);
 }
