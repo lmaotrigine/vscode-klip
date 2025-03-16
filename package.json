@@ -52,6 +52,11 @@
           "description": "Path to the klip.toml file (default=~/.klip.toml)",
           "type": "string",
           "default": ""
+        },
+        "klip.showMessage": {
+          "description": "Show a message dialog after copying successfully",
+          "type": "boolean",
+          "default": true
         }
       }
     }
@@ -65,13 +70,15 @@
     "lint": "eslint src"
   },
   "devDependencies": {
-    "@types/vscode": "^1.93.0",
+    "@eslint/eslintrc": "^3.3.0",
+    "@eslint/js": "^9.22.0",
     "@types/node": "22.x",
+    "@types/vscode": "^1.98.0",
     "@typescript-eslint/eslint-plugin": "^8.3.0",
     "@typescript-eslint/parser": "^8.3.0",
+    "@vscode/vsce": "^3.3.0",
     "eslint": "^9.9.1",
-    "typescript": "^5.5.4",
-    "@vscode/vsce": "^3.1.0"
+    "typescript": "^5.5.4"
   },
   "packageManager": "pnpm@10.6.3+sha512.bb45e34d50a9a76e858a95837301bfb6bd6d35aea2c5d52094fa497a467c43f5c440103ce2511e9e0a2f89c3d6071baac3358fc68ac6fb75e2ceb3d2736065e6"
 }
