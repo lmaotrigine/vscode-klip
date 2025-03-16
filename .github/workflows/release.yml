@@ -1,0 +1,48 @@
+name: Release
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    if: github.repository == 'lmaotrigine/vscode-klip'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18  # shipped with vscode
+          cache: pnpm
+      - run: pnpm install
+      - name: Build VSIX
+        run: |
+          pnpm package
+          mv vscode-klip-*.vsix vscode-klip.vsix
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vsix
+          path: vscode-klip.vsix
+
+  create_release:
+    if: github.repository == 'lmaotrigine/vscode-klip'
+    runs-on: ubuntu-latest
+    needs: [build]
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - id: create_release
+        uses: ncipollo/release-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: Release ${{ github.ref_name }}
+          draft: true
+          artifacts: ./artifacts/vsix/vscode-klip.vsix
+          artifactContentType: application/zip
