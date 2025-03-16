@@ -16,7 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
     const cb = editor.document.getText(editor.selection);
     let command = vscode.workspace.getConfiguration('klip')['klipBinPath'];
     const configPath = vscode.workspace.getConfiguration('klip')['klipConfigPath'];
-    const args = ['copy'];
+    const args = [];
     if (!cb.length) {
       return;
     }
@@ -52,14 +52,14 @@ export function activate(context: vscode.ExtensionContext) {
     }
     let command = vscode.workspace.getConfiguration('klip')['klipBinPath'];
     const configPath = vscode.workspace.getConfiguration('klip')['klipConfigPath'];
-    const args = ['paste'];
+    const args = [];
     if (!command?.length) {
       command = 'klip';
     }
     if (configPath?.length) {
-      args.push('--config');
-      args.push(configPath);
+      args.push('--config', configPath);
     }
+    args.push('paste');
     const options = vscode.workspace.workspaceFolders
       ? { cwd: vscode.workspace.workspaceFolders[0].uri.fsPath }
       : {};
