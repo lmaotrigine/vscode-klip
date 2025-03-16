@@ -6,7 +6,7 @@
   "license": "MPL-2.0",
   "repository": "https://git.5ht2.me/lmaotrigine/vscode-klip",
   "engines": {
-    "vscode": "^1.93.0"
+    "vscode": "^1.98.0"
   },
   "categories": [
     "Other"
