@@ -6,7 +6,7 @@ Make a local selection, paste it instantaneously into VS Code running on another
 
 ## Requirements
 
-[klip](https://git.5ht2.me/lmaotrigine/klip) has to be installed and configured on the system.
+[klip](https://github.com/lmaotrigine/klip) has to be installed and configured on the system.
 The `klip` executable must be in your `$PATH`.
 
 ## Extension Settings

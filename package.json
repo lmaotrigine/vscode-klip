@@ -5,7 +5,7 @@
   "version": "0.0.1",
   "license": "MPL-2.0",
   "publisher": "lmaotrigine",
-  "repository": "https://git.5ht2.me/lmaotrigine/vscode-klip",
+  "repository": "https://github.com/lmaotrigine/vscode-klip",
   "engines": {
     "vscode": "^1.98.0"
   },
